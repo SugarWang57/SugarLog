@@ -9,6 +9,45 @@
 - 性能监控与统计
 - 易于集成和扩展
 
+---
+
+## 安装包与系统全局安装
+
+### 1. 安装包内容
+本仓库 `install_package/` 目录下包含：
+- `include/`：所有头文件，直接拷贝到系统或项目include目录即可
+- `libsugarlog.a`：静态库文件
+- `sugarlog.pc`：pkg-config 配置文件
+- `install.sh`：一键安装脚本（推荐）
+
+### 2. 一键系统安装（推荐）
+```bash
+cd install_package
+sudo ./install.sh
+```
+安装后，所有项目可直接：
+```cpp
+#include <sugarlog/sugarlog.hpp>
+```
+编译时：
+```sh
+g++ myapp.cpp -lsugarlog -lpthread
+```
+
+### 3. pkg-config 用法
+安装后可用：
+```sh
+g++ myapp.cpp $(pkg-config --cflags --libs sugarlog) -lpthread
+```
+
+### 4. 卸载方法
+手动删除：
+- `/usr/local/include/sugarlog/`
+- `/usr/local/lib/libsugarlog.a`
+- `/usr/local/lib/pkgconfig/sugarlog.pc`
+
+---
+
 ## 构建与导入
 
 ### 1. 构建静态库
@@ -76,73 +115,11 @@ g++ -std=c++20 -O3 -I/path/to/sugarlog/include \
 // 4. 系统库: pthread (Windows下可能不需要)
 ```
 
-### 3. 完整集成示例
-
-#### CMake 项目示例
-```cmake
-cmake_minimum_required(VERSION 3.16)
-project(MyProject)
-
-set(CMAKE_CXX_STANDARD 20)
-
-# 导入 SugarLog
-include_directories(/path/to/sugarlog/include)
-add_library(sugarlog STATIC IMPORTED)
-set_target_properties(sugarlog PROPERTIES 
-    IMPORTED_LOCATION /path/to/sugarlog/build/libsugarlog.a
-)
-
-# 你的项目
-add_executable(my_app main.cpp)
-target_link_libraries(my_app sugarlog pthread)
-```
-
-#### 源文件示例
-```cpp
-#include "sugarlog.hpp"
-#include "console_sink.hpp"
-
-int main() {
-    using namespace sugarlog;
-    
-    // 初始化日志系统
-    LogManager::get().initialize();
-    LogManager::get().add_sink(std::make_shared<ConsoleSink>());
-    
-    // 使用日志
-    LOG_INFO("Hello, SugarLog!");
-    LOG_ERROR("Something went wrong!");
-    
-    return 0;
-}
-```
-
-### 4. 依赖说明
-- **C++20**: 需要支持 C++20 的编译器
-- **pthread**: 需要链接 pthread 库（Linux/macOS）
-- **头文件**: 需要包含 `include/` 目录
-
-### 5. 常见问题
-
-#### 链接错误
-```bash
-# 如果遇到链接错误，确保：
-# 1. 静态库路径正确
-# 2. 已链接 pthread
-# 3. 编译器支持 C++20
-```
-
-#### 编译错误
-```bash
-# 如果遇到编译错误，检查：
-# 1. 头文件路径是否正确
-# 2. 是否使用了正确的 C++ 标准
-# 3. 是否包含了必要的头文件
-```
+---
 
 ## 快速使用示例
 ```cpp
-#include "sugarlog.hpp"
+#include <sugarlog/sugarlog.hpp>
 
 int main() {
     using namespace sugarlog;
@@ -153,6 +130,8 @@ int main() {
     return 0;
 }
 ```
+
+---
 
 ## 主要API手册
 
