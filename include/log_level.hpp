@@ -7,6 +7,8 @@
 
 #include <string>
 #include <ostream>
+#include <algorithm>
+#include <stdexcept>
 
 namespace sugarlog {
 

@@ -55,10 +55,14 @@ public:
     AsyncLogger& operator=(const AsyncLogger&) = delete;
     
     /**
-     * @brief 禁用移动构造和赋值
+     * @brief 移动构造函数
      */
-    AsyncLogger(AsyncLogger&&) = delete;
-    AsyncLogger& operator=(AsyncLogger&&) = delete;
+    AsyncLogger(AsyncLogger&& other) noexcept;
+    
+    /**
+     * @brief 移动赋值操作符
+     */
+    AsyncLogger& operator=(AsyncLogger&& other) noexcept;
     
     /**
      * @brief 启动异步日志器
@@ -334,6 +338,31 @@ inline AsyncLogger::AsyncLogger(const AsyncLoggerConfig& config)
     , queue_(config.queue_size)
     , running_(false)
     , stop_requested_(false) {
+}
+
+inline AsyncLogger::AsyncLogger(AsyncLogger&& other) noexcept
+    : config_(std::move(other.config_))
+    , queue_(other.config_.queue_size)  // 重新创建队列
+    , sinks_(std::move(other.sinks_))
+    , workers_(std::move(other.workers_))
+    , running_(other.running_.load())
+    , stop_requested_(other.stop_requested_.load())
+    , last_flush_time_(other.last_flush_time_)
+    , dropped_count_(other.dropped_count_.load()) {
+    other.running_ = false;
+    other.stop_requested_ = true;
+}
+
+inline AsyncLogger& AsyncLogger::operator=(AsyncLogger&& other) noexcept {
+    if (this != &other) {
+        stop(true);
+        config_ = std::move(other.config_);
+        // 重新构造queue_
+        this->~AsyncLogger();
+        new (this) AsyncLogger(std::move(other));
+        // 其他成员已在移动构造函数中处理
+    }
+    return *this;
 }
 
 inline AsyncLogger::~AsyncLogger() {

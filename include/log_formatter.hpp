@@ -10,6 +10,9 @@
 #include <string>
 #include <memory>
 #include <regex>
+#include <unordered_map>
+#include <mutex>
+#include <functional>
 
 namespace sugarlog {
 

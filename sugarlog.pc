@@ -1,0 +1,11 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: sugarlog
+Description: A modern, high-performance C++ logging library
+Version: 1.0.0
+Cflags: -I${includedir}/sugarlog
+Libs: -L${libdir} -lsugarlog
+Requires: 
