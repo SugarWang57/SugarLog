@@ -1,0 +1,42 @@
+# Build
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.o
+*.obj
+*.so
+*.a
+*.lib
+*.dll
+*.exe
+*.out
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.sublime*
+*.swp
+*.user
+*.workspace
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test/coverage
+*.gcda
+*.gcno
+*.gcov
+coverage/
+
+# Backup
+*~
+*.bak
+
+# Others
+*.tmp
+*.temp 
